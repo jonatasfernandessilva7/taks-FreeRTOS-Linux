@@ -8,6 +8,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+TaskHandle_t Task3_Handle;
+
+
 void vTask1(void *pvParameters);
 void vTask2(void *pvParameters);
 void vTask3(void *pvParameters);
@@ -22,16 +25,10 @@ int main(void)
 		 NULL /** identificador da tarefa */
 		 );
     xTaskCreate(&vTask2, "kernel foi", 1024, NULL, 1, NULL);
-    xTaskCreate(&vTask3, "teste finalizado", 1024, NULL, 1, NULL);
+    xTaskCreate(&vTask3, "teste finalizado", 1024, NULL, 1, &Task3_Handle);
 
     vTaskStartScheduler(); /** inicia o agendador de tarefas */
-    TaskHandle_t xHandle;
      
-    vTaskSuspend( xHandle );
-
- 
-
-
     return 0;
 }
 
@@ -50,16 +47,18 @@ void vTask2(void *pvParameters)
     {
         printf("kernel foi\r\n");
         vTaskDelay(pdMS_TO_TICKS(5000));
+	vTaskResume(Task3_Handle);
     }
 }
 
 void vTask3(void *pvParameters)
 {
-	for (int i = 0;i < 1; i++)
+	for (;;)
 	{
 		printf("kernel finalizado\r\n");
 		vTaskDelay(pdMS_TO_TICKS(6000));
-
+		vTaskSuspend(Task3_Handle);
 	}
+
 
 }
