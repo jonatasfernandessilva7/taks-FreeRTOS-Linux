@@ -1,4 +1,4 @@
-# taks-FreeRTOS-Linux
+# tasks-FreeRTOS-Linux
 
 ## Resumo
 O FreeRTOS é um simulador de kernel open source, usado para aplicações em tempo real. Esse projeto simula a criação de 4 tasks, que são equivalentes a threads. A função que executa a task 3 é utilizada para suspender a execução dela mesma. A função vTaskSuspend() é utilizada para fazer essa interrupção, para que as tasks voltem a rodar em loop se deve utilizar a função vTaskResume(), isso é o que ocorre dentro do loop for da task 2, nessa função há um contador i, o contador é iniciado em 0, e incrementa a cada vez que o a task 2 é executada pelo kernel. Quando o contador i chega em 2 a task 3 volta a ser eecutada por mais uma vez e o contador i recebe 6 como valor de variável, com isso ocorre uma verificação de contador, dentro dessa condicional é executada a task 4, que encerra o kernel.
