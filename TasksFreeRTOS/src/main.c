@@ -46,7 +46,6 @@ void vTask1(void *pvParameters)
 
 void vTask2(void *pvParameters)
 {
-<<<<<<< HEAD
 	int i = 0;
 	for (;;)
 	{
