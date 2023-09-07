@@ -8,53 +8,60 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+TaskHandle_t Task1_Handle;
+TaskHandle_t Task2_Handle;
 TaskHandle_t Task3_Handle;
-
+TaskHandle_t TaskStopKernel_Handle;
 
 void vTask1(void *pvParameters);
 void vTask2(void *pvParameters);
 void vTask3(void *pvParameters);
+void vTaskStopKernel(void *pvParameters);
 
 int main(void)
 {
-    xTaskCreate(&vTask1, /** tarefa ou função a ser executada */
-		"Task jonatas testando kernel",  /** nome da tarefa ou função */
-		 1024, /** tamanho da pilha  */
-		 NULL, /** parametro de entrada */ 
-		 1, /** prioridade da tarefa */ 
-		 NULL /** identificador da tarefa */
-		 );
-    xTaskCreate(&vTask2, "kernel foi", 1024, NULL, 1, NULL);
-    xTaskCreate(&vTask3, "tudo ok", 1024, NULL, 1, &Task3_Handle);
+	xTaskCreate(&vTask1,						/** tarefa ou função a ser executada */
+				"Task jonatas testando kernel", /** nome da tarefa ou função */
+				configMINIMAL_STACK_SIZE,		/** tamanho da pilha  */
+				NULL,							/** parametro de entrada */
+				1,								/** prioridade da tarefa */
+				&Task1_Handle					/** identificador da tarefa */
+	);
+	xTaskCreate(&vTask2, "kernel foi", configMINIMAL_STACK_SIZE, NULL, 1, &Task2_Handle);
+	xTaskCreate(&vTask3, "tudo ok", configMINIMAL_STACK_SIZE, NULL, 1, &Task3_Handle);
 
-    vTaskStartScheduler(); /** inicia o agendador de tarefas */
-     
-    return 0;
+	vTaskStartScheduler(); /** inicia o agendador de tarefas */
+
+	return 0;
 }
 
 void vTask1(void *pvParameters)
 {
-    for (;;)
-    {
-        printf("Task jonatas testando kernel\r\n");
-        vTaskDelay(pdMS_TO_TICKS(2000));
-    }
+	for (;;)
+	{
+		printf("Task jonatas testando kernel\r\n");
+		vTaskDelay(pdMS_TO_TICKS(2000));
+	}
 }
 
 void vTask2(void *pvParameters)
 {
-    int i = 0; 
-    for (;;)
-    {
-        printf("Task kernel esta funcionando\r\n");
-        vTaskDelay(pdMS_TO_TICKS(2000));
-	if(i == 2)
+	int i = 0;
+	for (;;)
 	{
-	   vTaskResume(Task3_Handle);
-	   i-=2;
+		printf("Task kernel esta funcionando\r\n");
+		vTaskDelay(pdMS_TO_TICKS(2000));
+		if (i == 2)
+		{
+			vTaskResume(Task3_Handle);
+			i = 6;
+			if(i == 6)
+			{
+				xTaskCreate(&vTaskStopKernel, "finalizado", configMINIMAL_STACK_SIZE, NULL, 1, &TaskStopKernel_Handle);
+			}
+		}
+		i++;
 	}
-	i++;
-    }
 }
 
 void vTask3(void *pvParameters)
@@ -65,6 +72,13 @@ void vTask3(void *pvParameters)
 		vTaskDelay(pdMS_TO_TICKS(2000));
 		vTaskSuspend(Task3_Handle);
 	}
+}
 
-
+void vTaskStopKernel(void *pvParameters)
+{
+	printf("finalizado\r\n");
+	vTaskDelete(Task1_Handle);
+	vTaskDelete(Task2_Handle);
+	vTaskDelete(Task3_Handle);
+	vTaskEndScheduler(); /** Encerra o agendador de tarefas */
 }
