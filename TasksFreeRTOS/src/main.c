@@ -25,7 +25,7 @@ int main(void)
 		 NULL /** identificador da tarefa */
 		 );
     xTaskCreate(&vTask2, "kernel foi", 1024, NULL, 1, NULL);
-    xTaskCreate(&vTask3, "teste finalizado", 1024, NULL, 1, &Task3_Handle);
+    xTaskCreate(&vTask3, "tudo ok", 1024, NULL, 1, &Task3_Handle);
 
     vTaskStartScheduler(); /** inicia o agendador de tarefas */
      
@@ -37,17 +37,23 @@ void vTask1(void *pvParameters)
     for (;;)
     {
         printf("Task jonatas testando kernel\r\n");
-        vTaskDelay(pdMS_TO_TICKS(1000));
+        vTaskDelay(pdMS_TO_TICKS(2000));
     }
 }
 
 void vTask2(void *pvParameters)
 {
+    int i = 0; 
     for (;;)
     {
-        printf("kernel foi\r\n");
-        vTaskDelay(pdMS_TO_TICKS(5000));
-	vTaskResume(Task3_Handle);
+        printf("Task kernel esta funcionando\r\n");
+        vTaskDelay(pdMS_TO_TICKS(2000));
+	if(i == 2)
+	{
+	   vTaskResume(Task3_Handle);
+	   i-=2;
+	}
+	i++;
     }
 }
 
@@ -55,8 +61,8 @@ void vTask3(void *pvParameters)
 {
 	for (;;)
 	{
-		printf("kernel finalizado\r\n");
-		vTaskDelay(pdMS_TO_TICKS(6000));
+		printf("tudo ok\r\n");
+		vTaskDelay(pdMS_TO_TICKS(2000));
 		vTaskSuspend(Task3_Handle);
 	}
 
