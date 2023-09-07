@@ -28,4 +28,6 @@ Ao fazer isso será gerada uma nova pasta chamada *build*. Dentro dessa pasta se
 Jônatas Fernandes
 
 #### Referência
+```bash
 https://youtu.be/wZmXPj1YvBg?si=-CDg9VBKjG4tUGgU
+```
