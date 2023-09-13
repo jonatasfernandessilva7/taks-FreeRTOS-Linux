@@ -54,11 +54,10 @@ void vTask2(void *pvParameters)
 		if (i == 2)
 		{
 			vTaskResume(Task3_Handle);
-			i = 6;
-			if(i == 6)
-			{
-				xTaskCreate(&vTaskStopKernel, "finalizado", configMINIMAL_STACK_SIZE, NULL, 1, &TaskStopKernel_Handle);
-			}
+		}
+		if (i == 6)
+		{
+			xTaskCreate(&vTaskStopKernel, "finalizado", configMINIMAL_STACK_SIZE, NULL, 1, &TaskStopKernel_Handle);
 		}
 		i++;
 	}
